@@ -1,5 +1,10 @@
 import localFont from "next/font/local";
 import "./globals.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { Box, Container } from "@mui/material";
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,10 +26,19 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[ #FAFAFA]`}
+      > 
+     
+     
+      <Box maxWidth="lg" sx={{  padding: "0", margin: "auto" }}>
+
+            <Navbar  />
+            {children}
+            <Footer />
+      </Box>
+
       </body>
+      
     </html>
   );
 }
