@@ -26,11 +26,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[ #FAFAFA]`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#747775]`}
       > 
      
      
-      <Box maxWidth="lg" sx={{  padding: "0", margin: "auto" }}>
+      <Box maxWidth="lg" sx={{  padding: "0", margin: "auto",  }}>
 
             <Navbar  />
             {children}
