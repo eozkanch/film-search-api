@@ -60,8 +60,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function MovieDetails({ params }: PageProps) {
-    const { id } = await params;
-    const movie = await fetchMovieDetails(id);
+    try {
+        const { id } = await params;
+        const movie = await fetchMovieDetails(id);
 
-    return <MovieDetailsContent movie={movie} />;
+        return <MovieDetailsContent movie={movie} />;
+    } catch (error) {
+        console.error("Error fetching movie details:", error);
+        return <MovieDetailsContent movie={null} />;
+    }
 }

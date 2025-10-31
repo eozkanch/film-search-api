@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Movie } from "@/app/types";
@@ -12,6 +13,8 @@ interface MovieDetailsContentProps {
 
 export default function MovieDetailsContent({ movie }: MovieDetailsContentProps) {
     const { t } = useTranslation();
+    const [posterError, setPosterError] = useState<boolean>(false);
+    const [backgroundError, setBackgroundError] = useState<boolean>(false);
 
     if (!movie) {
         return (
@@ -32,18 +35,22 @@ export default function MovieDetailsContent({ movie }: MovieDetailsContentProps)
         );
     }
 
+    const posterUrl = movie.Poster && movie.Poster !== "N/A" && !posterError ? movie.Poster : "/NoImage.webp";
+    const backgroundUrl = movie.Poster && movie.Poster !== "N/A" && !backgroundError ? movie.Poster : null;
+
     return (
         <div className="min-h-screen bg-black text-white">
             {/* Background Image with Overlay */}
-            {movie.Poster !== "N/A" && (
+            {backgroundUrl && (
                 <div className="fixed inset-0 -z-10">
                     <Image
-                        src={movie.Poster}
+                        src={backgroundUrl}
                         alt={movie.Title || "Background"}
                         fill
                         className="object-cover opacity-10"
                         quality={30}
                         priority={false}
+                        onError={() => setBackgroundError(true)}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/90 to-black/50" />
                 </div>
@@ -69,7 +76,7 @@ export default function MovieDetailsContent({ movie }: MovieDetailsContentProps)
                         <div className="flex-shrink-0 w-full lg:w-80 xl:w-96 mx-auto lg:mx-0">
                             <div className="relative bg-gray-950/50 backdrop-blur-xl border border-gray-900/50 rounded-2xl overflow-hidden shadow-2xl">
                                 <Image
-                                    src={movie.Poster !== "N/A" ? movie.Poster : "/NoImage.webp"}
+                                    src={posterUrl}
                                     alt={movie.Title || "No Image"}
                                     width={400}
                                     height={600}
@@ -77,6 +84,9 @@ export default function MovieDetailsContent({ movie }: MovieDetailsContentProps)
                                     priority
                                     fetchPriority="high"
                                     sizes="(max-width: 1024px) 100vw, 400px"
+                                    onError={() => setPosterError(true)}
+                                    placeholder="blur"
+                                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzFmMjkzNyIvPjwvc3ZnPg=="
                                 />
                             </div>
                         </div>
@@ -214,5 +224,6 @@ export default function MovieDetailsContent({ movie }: MovieDetailsContentProps)
         </div>
     );
 }
+
 
 
