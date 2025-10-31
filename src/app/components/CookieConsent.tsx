@@ -24,6 +24,52 @@ export default function CookieConsent() {
 
     const { t, lang } = useTranslation();
 
+    // Google Consent Mode v2 güncelleme fonksiyonu
+    const updateConsentMode = (analytics: boolean, marketing: boolean) => {
+        if (typeof window === "undefined" || !window.gtag) {
+            // gtag henüz yüklenmediyse, dataLayer'a ekle
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'consent_update',
+                'consent': {
+                    'ad_storage': marketing ? 'granted' : 'denied',
+                    'ad_user_data': marketing ? 'granted' : 'denied',
+                    'ad_personalization': marketing ? 'granted' : 'denied',
+                    'analytics_storage': analytics ? 'granted' : 'denied'
+                }
+            });
+            // gtag fonksiyonunu bekle
+            setTimeout(() => {
+                if (window.gtag) {
+                    updateConsentModeDirect(analytics, marketing);
+                }
+            }, 100);
+            return;
+        }
+
+        updateConsentModeDirect(analytics, marketing);
+    };
+
+    // Direkt gtag ile consent güncelleme
+    const updateConsentModeDirect = (analytics: boolean, marketing: boolean) => {
+        if (typeof window === "undefined" || !window.gtag) return;
+
+        // Google Consent Mode v2 güncelleme
+        window.gtag('consent', 'update', {
+            'ad_storage': marketing ? 'granted' : 'denied',
+            'ad_user_data': marketing ? 'granted' : 'denied',
+            'ad_personalization': marketing ? 'granted' : 'denied',
+            'analytics_storage': analytics ? 'granted' : 'denied'
+        });
+
+        // Reklam verilerini çıkartma (ads_data_redaction) - sadece reddedildiğinde
+        if (!marketing) {
+            window.gtag('set', 'ads_data_redaction', true);
+        } else {
+            window.gtag('set', 'ads_data_redaction', false);
+        }
+    };
+
     // Prevent hydration mismatch by only rendering on client
     useEffect(() => {
         setMounted(true);
@@ -36,6 +82,9 @@ export default function CookieConsent() {
                 setConsent(savedConsent);
                 setShowBanner(false);
                 
+                // Google Consent Mode'u güncelle (kaydedilmiş tercihlere göre)
+                updateConsentMode(savedConsent.analytics, savedConsent.marketing);
+                
                 // Initialize GTM and GA4 if analytics is consented
                 if (savedConsent.analytics) {
                     initializeGTM();
@@ -47,6 +96,7 @@ export default function CookieConsent() {
             }
         } else {
             // First time visitor - show banner
+            // Varsayılan durum zaten layout.tsx'de 'denied' olarak ayarlandı
             setShowBanner(true);
         }
     }, []);
@@ -147,6 +197,10 @@ export default function CookieConsent() {
         localStorage.setItem("cookieConsent", JSON.stringify(newConsent));
         // Also save timestamp for future reference
         localStorage.setItem("cookieConsentTimestamp", new Date().toISOString());
+        
+        // Google Consent Mode v2'yi güncelle - Tüm izinler verildi
+        updateConsentMode(true, true);
+        
         setShowBanner(false);
         initializeGTM();
         initializeGA4();
@@ -178,6 +232,10 @@ export default function CookieConsent() {
         localStorage.setItem("cookieConsent", JSON.stringify(newConsent));
         // Also save timestamp for future reference
         localStorage.setItem("cookieConsentTimestamp", new Date().toISOString());
+        
+        // Google Consent Mode v2'yi güncelle - Tüm izinler reddedildi
+        updateConsentMode(false, false);
+        
         setShowBanner(false);
     };
 
@@ -186,6 +244,10 @@ export default function CookieConsent() {
         localStorage.setItem("cookieConsent", JSON.stringify(consent));
         // Also save timestamp for future reference
         localStorage.setItem("cookieConsentTimestamp", new Date().toISOString());
+        
+        // Google Consent Mode v2'yi güncelle (kullanıcı tercihlerine göre)
+        updateConsentMode(consent.analytics, consent.marketing);
+        
         setShowBanner(false);
         setShowSettings(false);
         

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
@@ -53,6 +54,27 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+      {/* Google Consent Mode v2 - Varsayılan izin durumunu ayarla (sayfa yüklenmeden önce) */}
+      <Script
+        id="google-consent-mode-default"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            
+            // Varsayılan izin durumu - Tüm izinler reddedildi (GDPR uyumlu)
+            // Kullanıcı tercih verene kadar tüm çerezler reddedilir
+            gtag('consent', 'default', {
+              'ad_storage': 'denied',
+              'ad_user_data': 'denied',
+              'ad_personalization': 'denied',
+              'analytics_storage': 'denied',
+              'wait_for_update': 500
+            });
+          `,
+        }}
+      />
       {/* Google Tag Manager (noscript) - Will be shown only if JavaScript is disabled */}
       <noscript>
         <iframe 
