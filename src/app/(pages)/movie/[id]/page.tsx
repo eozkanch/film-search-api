@@ -62,11 +62,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function MovieDetails({ params }: PageProps) {
     try {
         const { id } = await params;
+        
+        // Validate ID format (IMDb ID should start with 'tt')
+        if (!id || (!id.startsWith('tt') && !id.match(/^[0-9a-zA-Z]+$/))) {
+            console.error("Invalid movie ID format:", id);
+            return <MovieDetailsContent movie={null} />;
+        }
+
         const movie = await fetchMovieDetails(id);
+
+        // Check if movie data is valid
+        if (!movie || !movie.imdbID) {
+            console.error("Invalid movie data received");
+            return <MovieDetailsContent movie={null} />;
+        }
 
         return <MovieDetailsContent movie={movie} />;
     } catch (error) {
         console.error("Error fetching movie details:", error);
+        
+        // Log more details for debugging
+        if (error instanceof Error) {
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+        }
+        
         return <MovieDetailsContent movie={null} />;
     }
 }
