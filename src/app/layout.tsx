@@ -47,9 +47,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head>
         {/* Google Tag Manager - Will be loaded only after user consent via CookieConsent component */}
         {/* Security: Additional meta tags for CSP and XSS protection */}
+        {/* Note: X-Frame-Options and X-XSS-Protection are set as HTTP headers in next.config.mjs, not as meta tags */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-        <meta httpEquiv="X-Frame-Options" content="DENY" />
-        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
       </head>
       <body
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}

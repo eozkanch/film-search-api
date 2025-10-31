@@ -76,7 +76,7 @@ const nextConfig = {
                     },
                     {
                         key: 'X-Frame-Options',
-                        value: 'SAMEORIGIN'
+                        value: 'DENY' // Prevent clickjacking
                     },
                     {
                         key: 'X-Content-Type-Options',
@@ -111,16 +111,6 @@ const nextConfig = {
                             "object-src 'none'",
                             "upgrade-insecure-requests"
                         ].join('; ')
-                    },
-                    // XSS Protection
-                    {
-                        key: 'X-XSS-Protection',
-                        value: '1; mode=block'
-                    },
-                    // Prevent clickjacking
-                    {
-                        key: 'X-Frame-Options',
-                        value: 'DENY'
                     },
                 ],
             },

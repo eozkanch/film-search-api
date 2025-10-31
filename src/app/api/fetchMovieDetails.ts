@@ -37,7 +37,15 @@ export async function fetchMovieDetails(id: string): Promise<Movie> {
 
         if (!response.ok) {
             console.error("API response not OK:", response.status, response.statusText);
-            throw new Error(`Failed to fetch movie details: ${response.status} ${response.statusText}`);
+            
+            // Handle specific HTTP status codes
+            if (response.status === 401) {
+                throw new Error("API key is invalid or unauthorized. Please check your API key.");
+            } else if (response.status === 429) {
+                throw new Error("Request limit reached! Please try again later or upgrade your API plan.");
+            } else {
+                throw new Error(`Failed to fetch movie details: ${response.status} ${response.statusText}`);
+            }
         }
 
         const data = await response.json() as MovieDetailsResponse;
@@ -45,6 +53,12 @@ export async function fetchMovieDetails(id: string): Promise<Movie> {
         if (data.Response === "False") {
             const errorMessage = data.Error || "No data available for this movie";
             console.error("API returned error:", errorMessage);
+            
+            // Check for specific API errors
+            if (errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("exceeded")) {
+                throw new Error("Request limit reached! Please try again later or upgrade your API plan.");
+            }
+            
             throw new Error(errorMessage);
         }
 
