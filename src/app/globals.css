@@ -2,3 +2,645 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Optimized Global Styles */
+@layer base {
+  :root {
+    /* Responsive Scrollbar */
+    --scrollbar-width: clamp(6px, 1.5vw, 10px);
+    
+    /* Responsive Font Sizes */
+    --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+    --font-size-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+    --font-size-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --font-size-lg: clamp(1.125rem, 1rem + 0.625vw, 1.5rem);
+    --font-size-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.875rem);
+    --font-size-2xl: clamp(1.5rem, 1.25rem + 1.25vw, 2.25rem);
+    --font-size-3xl: clamp(1.875rem, 1.5rem + 1.875vw, 3rem);
+    --font-size-4xl: clamp(2.25rem, 1.75rem + 2.5vw, 4rem);
+    
+    /* Responsive Spacing */
+    --spacing-xs: clamp(0.25rem, 0.2rem + 0.25vw, 0.5rem);
+    --spacing-sm: clamp(0.5rem, 0.4rem + 0.5vw, 0.75rem);
+    --spacing-md: clamp(0.75rem, 0.6rem + 0.75vw, 1rem);
+    --spacing-lg: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+    --spacing-xl: clamp(1.5rem, 1.2rem + 1.5vw, 2rem);
+    --spacing-2xl: clamp(2rem, 1.5rem + 2.5vw, 3rem);
+    
+    /* Responsive Container Padding */
+    --container-padding: clamp(1rem, 4vw, 2rem);
+    --container-max-width: 100%;
+    
+    /* Responsive Border Radius */
+    --radius-sm: clamp(0.25rem, 0.2rem + 0.25vw, 0.375rem);
+    --radius-md: clamp(0.5rem, 0.4rem + 0.5vw, 0.75rem);
+    --radius-lg: clamp(0.75rem, 0.6rem + 0.75vw, 1rem);
+    --radius-xl: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+  }
+
+  /* Tablet and above */
+  @media (min-width: 768px) {
+    :root {
+      --container-padding: clamp(1.5rem, 5vw, 3rem);
+      --container-max-width: 1280px;
+    }
+  }
+
+  /* Desktop and above */
+  @media (min-width: 1024px) {
+    :root {
+      --container-padding: clamp(2rem, 6vw, 4rem);
+    }
+  }
+
+  /* Large Desktop */
+  @media (min-width: 1536px) {
+    :root {
+      --container-max-width: 1536px;
+    }
+  }
+
+  * {
+    /* Improve rendering performance */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Optimize font rendering */
+    text-rendering: optimizeLegibility;
+    /* Responsive base font size */
+    font-size: var(--font-size-base);
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* Responsive viewport */
+    width: 100%;
+    max-width: 100vw;
+    /* Background color matching main */
+    @apply bg-black;
+  }
+
+  body {
+    @apply bg-black text-white antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Performance optimization */
+    will-change: auto;
+    transform: translateZ(0);
+    /* Responsive typography */
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    /* Responsive container padding */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  main {
+    /* Center main content */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    min-height: calc(100vh - 8rem);
+    margin: 0 auto;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  /* Responsive main adjustments */
+  @media (min-width: 768px) {
+    main {
+      max-width: var(--container-max-width);
+    }
+  }
+
+  /* Optimized Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+    height: var(--scrollbar-width);
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-black;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-800 rounded-full;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: background-color 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-700;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #1f2937 #000000;
+  }
+}
+
+@layer components {
+  /* Screen reader only - Optimized */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Optimized Gradient Text */
+  .gradient-text {
+    background: linear-gradient预期的(135deg, #dc2626 0%, #ef4444 50%, #dc2626 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 3s ease infinite;
+    will-change: background-position;
+  }
+
+  /* Optimized Glass Morphism */
+  .glass {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    will-change: transform;
+  }
+
+  .glass-light {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Optimized Premium Button */
+  .btn-primary {
+    @apply bg-red-600 hover:bg-red-700 text-white font-semibold;
+    @apply px-6 py-3 rounded-lg transition-all duration-300;
+    @apply transform hover:scale-105 active:scale-95;
+    @apply shadow-lg shadow-red-600/50 hover:shadow-xl hover:shadow-red-600/60;
+    will-change: transform;
+  }
+
+  /* Optimized Premium Card */
+  .card-premium {
+    @apply bg-black/80 backdrop-blur-xl border border-gray-800/50;
+    @apply rounded-xl shadow-2xl transition-all duration-300;
+    @apply hover:border-red-600/50 hover:shadow-red-600/20;
+    will-change: transform;
+  }
+
+  /* Optimized Premium Input */
+  .input-premium {
+    @apply bg-black/50 border border-gray-800 rounded-lg;
+    @apply text-white placeholder:text-gray-500;
+    @apply focus:outline-none focus:ring-2 focus:ring-red-600/50;
+    @apply focus:border-red-600/50 transition-all duration-300;
+  }
+}
+
+@layer utilities {
+  /* Optimized Keyframes - Using transform for better performance */
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translate3d(20px, 0, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 100%, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes slide-up-enhanced {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 100%, 0) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  @keyframes slide-up-banner {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 100%, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes modal-enter {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  @keyframes modal-enter-top {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -50px, 0) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(229, 9, 20, 0.6);
+    }
+  }
+
+  @keyframes pulse-glow-subtle {
+    0%, 100% {
+      text-shadow: 0 0 8px rgba(220, 38, 38, 0.4);
+    }
+    50% {
+      text-shadow: 0 0 12px rgba(220, 38, 38, 0.6), 0 0 16px rgba(220, 38, 38, 0.3);
+    }
+  }
+
+  @keyframes gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Optimized Animations - GPU accelerated */
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+    will-change: opacity, transform;
+  }
+
+  .animate-slide-in-right {
+    animation: slide-in-right 0.5s ease-out;
+    will-change: opacity, transform;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  .animate-slide-up-enhanced {
+    animation: slide-up-enhanced 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  .animate-slide-up-banner {
+    animation: slide-up-banner 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: opacity, transform;
+  }
+
+  .animate-modal-enter {
+    animation: modal-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  .animate-modal-enter-top {
+    animation: modal-enter-top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+    will-change: box-shadow;
+  }
+
+  .animate-pulse-glow-subtle {
+    animation: pulse-glow-subtle 2s ease-in-out infinite;
+    will-change: text-shadow;
+  }
+
+  .animate-gradient-shift {
+    background-size: 200% auto;
+    animation: gradient-shift 3s ease infinite;
+    will-change: background-position;
+  }
+
+  /* Custom Scrollbar for Drawer */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(17, 24, 39, 0.5);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(220, 38, 38, 0.3);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(220, 38, 38, 0.5);
+  }
+
+  /* Optimized Text Effects */
+  .text-glow {
+    text-shadow: 0 0 10px rgba(229, 9, 20, 0.5),
+                 0 0 20px rgba(229, 9, 20, 0.3),
+                 0 0 30px rgba(229, 9, 20, 0.2);
+  }
+
+  .text-shadow-premium {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5),
+                 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Optimized Hover Effects */
+  .hover-lift {
+    @apply transition-transform duration-300;
+    @apply hover:-translate-y-1 hover:shadow-xl;
+    will-change: transform;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300;
+    @apply hover:shadow-lg hover:shadow-red-600/50;
+    will-change: box-shadow;
+  }
+
+  /* Performance utilities */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .contain-layout {
+    contain: layout;
+  }
+
+  .contain-paint {
+    contain: paint;
+  }
+}
+
+/* Responsive Slick Carousel */
+.slick-slide {
+  width: auto !important;
+}
+
+.slick-slide > div {
+  width: 100%;
+  height: 100%;
+  padding: 0 0.25rem;
+}
+
+.slick-list {
+  margin: 0;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.slick-track {
+  display: flex !important;
+  align-items: stretch;
+}
+
+/* Responsive Slide Widths */
+@media (max-width: 479px) {
+  .slick-slide {
+    width: calc(100vw - 1rem) !important;
+  }
+  .slick-slide > div {
+    padding: 0 0.25rem;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .slick-slide {
+    width: calc((100vw - 2rem) / 1) !important;
+  }
+  .slick-slide > div {
+    padding: 0 0.375rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .slick-slide {
+    width: calc((100vw - 4rem) / 2) !important;
+  }
+  .slick-slide > div {
+    padding: 0 0.5rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .slick-slide {
+    width: calc((100vw - 6rem) / 3) !important;
+  }
+  .slick-slide > div {
+    padding: 0 0.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .slick-slide {
+    width: calc((100vw - 8rem) / 5) !important;
+  }
+  .slick-slide > div {
+    padding: 0 0.5rem;
+  }
+}
+
+/* Optimized Carousel Navigation Arrows */
+.carousel-container {
+  position: relative;
+  padding: 0 3rem 0 3rem;
+}
+
+@media (max-width: 479px) {
+  .carousel-container {
+    padding: 0 2rem 0 2rem;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .carousel-container {
+    padding: 0 2.5rem 0 2.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .carousel-container {
+    padding: 0 3rem 0 3rem;
+  }
+}
+
+/* Slick Arrow Base Styles */
+.slick-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.5) !important;
+  backdrop-filter: blur(8px);
+  border: none;
+  border-radius: 50%;
+  color: white !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.slick-arrow:hover,
+.slick-arrow:focus {
+  background: rgba(220, 38, 38, 0.8) !important;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.5);
+}
+
+.slick-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.slick-arrow::before {
+  display: none !important;
+}
+
+/* Previous Arrow */
+.slick-prev {
+  left: 0.5rem !important;
+}
+
+@media (max-width: 479px) {
+  .slick-prev {
+    left: 0.25rem !important;
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .slick-prev {
+    left: 0.75rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .slick-prev {
+    left: 1rem !important;
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* Next Arrow */
+.slick-next {
+  right: 0.5rem !important;
+}
+
+@media (max-width: 479px) {
+  .slick-next {
+    right: 0.25rem !important;
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .slick-next {
+    right: 0.75rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .slick-next {
+    right: 1rem !important;
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* Hide arrows on small screens if needed */
+@media (max-width: 480px) {
+  .slick-arrow {
+    opacity: 0.8;
+  }
+  
+  .slick-arrow:hover {
+    opacity: 1;
+  }
+}
+
+/* Ensure arrows don't overlap with slides - padding handled by container */
+
+/* Disable default slick arrow styles */
+.slick-disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}

@@ -1,0 +1,21 @@
+# robots.txt for Cinema Sphere
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://film-search-api.vercel.app/sitemap.xml
+
+# Disallow admin or private pages if any
+Disallow: /api/
+Disallow: /_next/
+
+# Allow all important pages
+Allow: /
+Allow: /movies
+Allow: /series
+Allow: /search
+Allow: /filter
+Allow: /category/
+Allow: /year/
+Allow: /movie/
+
