@@ -8,6 +8,7 @@ import MovieCard from "@/app/components/MovieCard";
 import { Movie } from "../types";
 import { FiArrowRight } from "react-icons/fi";
 import { useTranslation } from "@/app/hooks/useTranslation";
+import { logError } from "@/app/utils/logger";
 
 export default function NewSeries() {
     const { t } = useTranslation();
@@ -80,7 +81,7 @@ export default function NewSeries() {
                     // Rate limiting için kısa bekleme
                     await new Promise(resolve => setTimeout(resolve, 200));
                 } catch (err) {
-                    console.error(`Error fetching series for query "${query}":`, err);
+                    logError("Error fetching series", err, { query });
                     // Devam et, diğer query'leri dene
                 }
             }
@@ -103,7 +104,7 @@ export default function NewSeries() {
             setSeries(newSeries);
         } catch (err) {
             setError(t("newSeries.error"));
-            console.error("Error fetching new series:", err);
+            logError("Error fetching new series", err);
         } finally {
             setLoading(false);
         }

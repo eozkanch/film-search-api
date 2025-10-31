@@ -8,6 +8,7 @@ import { useDebounce } from "@/app/hooks/useDebounce";
 import { fetchMovies } from "@/app/api/movies";
 import { Movie } from "@/app/types";
 import { useTranslation } from "@/app/hooks/useTranslation";
+import { logError } from "@/app/utils/logger";
 
 export default function MoviesPage() {
     const { t } = useTranslation();
@@ -58,7 +59,7 @@ export default function MoviesPage() {
                     }
                     await new Promise(resolve => setTimeout(resolve, 200));
                 } catch (err) {
-                    console.error(`Error fetching movies for year ${y}:`, err);
+                    logError("Error fetching movies", err, { year: y });
                 }
             }
 
@@ -163,7 +164,7 @@ export default function MoviesPage() {
                                 
                                 await new Promise(resolve => setTimeout(resolve, 200));
                             } catch (err) {
-                                console.error(`Error loading more movies:`, err);
+                                logError("Error loading more movies", err);
                             }
                         }
 

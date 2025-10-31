@@ -1,4 +1,5 @@
 import { MovieSearchParams, MovieSearchResponse } from "../types";
+import { logError } from "../utils/logger";
 
 export async function fetchMovies({ query, type, year, page }: MovieSearchParams): Promise<MovieSearchResponse> {
     const API_KEY = process.env.NEXT_PUBLIC_OMDB_API_KEY;
@@ -25,11 +26,14 @@ export async function fetchMovies({ query, type, year, page }: MovieSearchParams
         // Handle HTTP errors (401, 429, etc.)
         if (!response.ok) {
             if (response.status === 401) {
-                throw new Error("API key is invalid or unauthorized. Please check your API key.");
+                logError("API authentication error", undefined, { status: response.status });
+                throw new Error("Unable to authenticate with the movie database. Please try again later.");
             } else if (response.status === 429) {
-                throw new Error("Request limit reached! Please try again later or upgrade your API plan.");
+                logError("API rate limit exceeded", undefined, { status: response.status });
+                throw new Error("Service temporarily unavailable. Please try again later.");
             } else {
-                throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+                logError("API request failed", undefined, { status: response.status });
+                throw new Error("Unable to fetch movies. Please try again later.");
             }
         }
 
@@ -40,19 +44,21 @@ export async function fetchMovies({ query, type, year, page }: MovieSearchParams
         } else {
             // Check for specific API errors
             const errorMessage = data.Error || "API request failed";
+            logError("API returned error", undefined, { error: errorMessage });
             
             if (errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("exceeded")) {
-                throw new Error("Request limit reached! Please try again later or upgrade your API plan.");
+                throw new Error("Service temporarily unavailable. Please try again later.");
             }
             
-            throw new Error(errorMessage);
+            // Generic error message for production
+            throw new Error("Unable to fetch movies. Please try again later.");
         }
     } catch (error) {
         if (error instanceof Error) {
-            // Re-throw with same error message
+            logError("Error in fetchMovies", error);
             throw error;
         }
-        throw new Error("Unknown error occurred while fetching movies");
+        throw new Error("Unable to fetch movies. Please try again later.");
     }
 }
 

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Movie } from "@/app/types";
 import { generateSEOMetadata, seoConfig } from "@/app/config/seo";
 import MovieDetailsContent from "./MovieDetailsContent";
+import { logError } from "@/app/utils/logger";
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             lang: "tr",
         });
     } catch (error) {
-        console.error("Error generating metadata:", error);
+        logError("Error generating metadata", error);
 
         return generateSEOMetadata({
             title: "Film Detayları - Hata",
@@ -65,7 +66,7 @@ export default async function MovieDetails({ params }: PageProps) {
         
         // Validate ID format (IMDb ID should start with 'tt')
         if (!id || (!id.startsWith('tt') && !id.match(/^[0-9a-zA-Z]+$/))) {
-            console.error("Invalid movie ID format:", id);
+            logError("Invalid movie ID format", undefined, { id });
             return <MovieDetailsContent movie={null} />;
         }
 
@@ -73,20 +74,13 @@ export default async function MovieDetails({ params }: PageProps) {
 
         // Check if movie data is valid
         if (!movie || !movie.imdbID) {
-            console.error("Invalid movie data received");
+            logError("Invalid movie data received");
             return <MovieDetailsContent movie={null} />;
         }
 
         return <MovieDetailsContent movie={movie} />;
     } catch (error) {
-        console.error("Error fetching movie details:", error);
-        
-        // Log more details for debugging
-        if (error instanceof Error) {
-            console.error("Error message:", error.message);
-            console.error("Error stack:", error.stack);
-        }
-        
+        logError("Error fetching movie details", error);
         return <MovieDetailsContent movie={null} />;
     }
 }

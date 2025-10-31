@@ -1,4 +1,5 @@
 import { Movie } from "../types";
+import { logError, logInfo } from "../utils/logger";
 
 const OMDB_API_KEY = process.env.NEXT_PUBLIC_OMDB_API_KEY;
 const OMDB_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -14,11 +15,11 @@ export async function fetchMovieDetails(id: string): Promise<Movie> {
     }
     
     if (!OMDB_API_KEY || !OMDB_API_URL) {
-        console.error("API configuration missing:", {
+        logError("API configuration missing", undefined, {
             hasKey: !!OMDB_API_KEY,
             hasUrl: !!OMDB_API_URL
         });
-        throw new Error("API key or URL is not configured");
+        throw new Error("API configuration error");
     }
     
     const params = new URLSearchParams({
@@ -27,24 +28,24 @@ export async function fetchMovieDetails(id: string): Promise<Movie> {
     });
 
     try {
-        const apiUrl = `${OMDB_API_URL}?${params}`;
-        console.log("Fetching movie details for ID:", id);
+        logInfo("Fetching movie details", { movieId: id });
         
-        const response = await fetch(apiUrl, {
+        const response = await fetch(`${OMDB_API_URL}?${params}`, {
             cache: 'no-store', // Ensure fresh data
             next: { revalidate: 3600 } // Revalidate every hour
         });
 
         if (!response.ok) {
-            console.error("API response not OK:", response.status, response.statusText);
-            
-            // Handle specific HTTP status codes
+            // Handle specific HTTP status codes with generic messages
             if (response.status === 401) {
-                throw new Error("API key is invalid or unauthorized. Please check your API key.");
+                logError("API authentication error", undefined, { status: response.status });
+                throw new Error("Unable to authenticate with the movie database. Please try again later.");
             } else if (response.status === 429) {
-                throw new Error("Request limit reached! Please try again later or upgrade your API plan.");
+                logError("API rate limit exceeded", undefined, { status: response.status });
+                throw new Error("Service temporarily unavailable. Please try again later.");
             } else {
-                throw new Error(`Failed to fetch movie details: ${response.status} ${response.statusText}`);
+                logError("API request failed", undefined, { status: response.status });
+                throw new Error("Unable to fetch movie details. Please try again later.");
             }
         }
 
@@ -52,27 +53,28 @@ export async function fetchMovieDetails(id: string): Promise<Movie> {
 
         if (data.Response === "False") {
             const errorMessage = data.Error || "No data available for this movie";
-            console.error("API returned error:", errorMessage);
+            logError("API returned error", undefined, { error: errorMessage });
             
             // Check for specific API errors
             if (errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("exceeded")) {
-                throw new Error("Request limit reached! Please try again later or upgrade your API plan.");
+                throw new Error("Service temporarily unavailable. Please try again later.");
             }
             
-            throw new Error(errorMessage);
+            // Generic error message for production
+            throw new Error("Movie details not available");
         }
 
         if (!data.imdbID || !data.Title) {
-            console.error("Invalid movie data received:", data);
-            throw new Error("Invalid movie data received from API");
+            logError("Invalid movie data received");
+            throw new Error("Invalid movie data received");
         }
 
         return data as Movie;
     } catch (error) {
         if (error instanceof Error) {
-            console.error("Error in fetchMovieDetails:", error.message);
+            logError("Error in fetchMovieDetails", error);
             throw error;
         }
-        throw new Error("Unknown error occurred while fetching movie details");
+        throw new Error("Unable to fetch movie details. Please try again later.");
     }
 }

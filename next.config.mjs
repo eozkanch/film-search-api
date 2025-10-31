@@ -29,8 +29,10 @@ const nextConfig = {
     
     // Compiler optimizations
     compiler: {
+        // Production'da console.log'ları kaldır
+        // console.error ve console.warn'ı logger utility üzerinden kontrol ediyoruz
         removeConsole: process.env.NODE_ENV === 'production' ? {
-            exclude: ['error', 'warn'],
+            exclude: ['error', 'warn'], // logger.ts'de kontrol ediyoruz
         } : false,
     },
 
