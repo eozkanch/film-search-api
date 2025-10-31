@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FiX, FiSettings, FiCheck } from "react-icons/fi";
 import { useTranslation } from "@/app/hooks/useTranslation";
 
@@ -24,8 +24,28 @@ export default function CookieConsent() {
 
     const { t, lang } = useTranslation();
 
+    // Direkt gtag ile consent güncelleme
+    const updateConsentModeDirect = useCallback((analytics: boolean, marketing: boolean) => {
+        if (typeof window === "undefined" || !window.gtag) return;
+
+        // Google Consent Mode v2 güncelleme
+        window.gtag('consent', 'update', {
+            'ad_storage': marketing ? 'granted' : 'denied',
+            'ad_user_data': marketing ? 'granted' : 'denied',
+            'ad_personalization': marketing ? 'granted' : 'denied',
+            'analytics_storage': analytics ? 'granted' : 'denied'
+        });
+
+        // Reklam verilerini çıkartma (ads_data_redaction) - sadece reddedildiğinde
+        if (!marketing) {
+            window.gtag('set', 'ads_data_redaction', true);
+        } else {
+            window.gtag('set', 'ads_data_redaction', false);
+        }
+    }, []);
+
     // Google Consent Mode v2 güncelleme fonksiyonu
-    const updateConsentMode = (analytics: boolean, marketing: boolean) => {
+    const updateConsentMode = useCallback((analytics: boolean, marketing: boolean) => {
         if (typeof window === "undefined" || !window.gtag) {
             // gtag henüz yüklenmediyse, dataLayer'a ekle
             window.dataLayer = window.dataLayer || [];
@@ -48,27 +68,7 @@ export default function CookieConsent() {
         }
 
         updateConsentModeDirect(analytics, marketing);
-    };
-
-    // Direkt gtag ile consent güncelleme
-    const updateConsentModeDirect = (analytics: boolean, marketing: boolean) => {
-        if (typeof window === "undefined" || !window.gtag) return;
-
-        // Google Consent Mode v2 güncelleme
-        window.gtag('consent', 'update', {
-            'ad_storage': marketing ? 'granted' : 'denied',
-            'ad_user_data': marketing ? 'granted' : 'denied',
-            'ad_personalization': marketing ? 'granted' : 'denied',
-            'analytics_storage': analytics ? 'granted' : 'denied'
-        });
-
-        // Reklam verilerini çıkartma (ads_data_redaction) - sadece reddedildiğinde
-        if (!marketing) {
-            window.gtag('set', 'ads_data_redaction', true);
-        } else {
-            window.gtag('set', 'ads_data_redaction', false);
-        }
-    };
+    }, [updateConsentModeDirect]);
 
     // Prevent hydration mismatch by only rendering on client
     useEffect(() => {
@@ -99,7 +99,7 @@ export default function CookieConsent() {
             // Varsayılan durum zaten layout.tsx'de 'denied' olarak ayarlandı
             setShowBanner(true);
         }
-    }, []);
+    }, [updateConsentMode, initializeGTM, initializeGA4]);
 
     // Prevent body scroll when modal is open
     useEffect(() => {
@@ -127,7 +127,7 @@ export default function CookieConsent() {
         };
     }, [showPolicy]);
 
-    const initializeGTM = () => {
+    const initializeGTM = useCallback(() => {
         if (typeof window !== "undefined") {
             window.dataLayer = window.dataLayer || [];
             (function(w: any, d: Document, s: string, l: string, i: string) {
@@ -144,9 +144,9 @@ export default function CookieConsent() {
                 f.parentNode?.insertBefore(j, f);
             })(window, document, 'script', 'dataLayer', 'GTM-W4R3QZZ6');
         }
-    };
+    }, []);
 
-    const initializeGA4 = () => {
+    const initializeGA4 = useCallback(() => {
         if (typeof window === "undefined") return;
         
         // Initialize dataLayer if not already initialized
@@ -184,7 +184,7 @@ export default function CookieConsent() {
             gtag('config', 'G-DX1LVZX0XQ');
         `;
         document.head.appendChild(script2);
-    };
+    }, []);
 
     const handleAcceptAll = () => {
         const newConsent = {
