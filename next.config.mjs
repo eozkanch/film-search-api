@@ -103,7 +103,7 @@ const nextConfig = {
                             "style-src 'self' 'unsafe-inline'",
                             "img-src 'self' data: https://m.media-amazon.com https://www.imdb.com https://www.googletagmanager.com",
                             "font-src 'self' data:",
-                            "connect-src 'self' https://www.omdbapi.com https://m.media-amazon.com https://www.googletagmanager.com",
+                            "connect-src 'self' https://www.omdbapi.com https://m.media-amazon.com https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://google-analytics.com",
                             "frame-ancestors 'self'",
                             "base-uri 'self'",
                             "form-action 'self'",
