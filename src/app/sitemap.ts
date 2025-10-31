@@ -62,3 +62,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [...staticPages, ...categoryPages, ...yearPages]
 }
 
+

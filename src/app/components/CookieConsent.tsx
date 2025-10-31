@@ -7,6 +7,7 @@ import { useTranslation } from "@/app/hooks/useTranslation";
 declare global {
     interface Window {
         dataLayer: any[];
+        gtag?: (...args: any[]) => void;
     }
 }
 
@@ -35,9 +36,10 @@ export default function CookieConsent() {
                 setConsent(savedConsent);
                 setShowBanner(false);
                 
-                // Initialize GTM if analytics is consented
+                // Initialize GTM and GA4 if analytics is consented
                 if (savedConsent.analytics) {
                     initializeGTM();
+                    initializeGA4();
                 }
             } catch (error) {
                 // Invalid localStorage data, show banner
@@ -76,7 +78,7 @@ export default function CookieConsent() {
     }, [showPolicy]);
 
     const initializeGTM = () => {
-        if (typeof window !== "undefined" && !window.dataLayer) {
+        if (typeof window !== "undefined") {
             window.dataLayer = window.dataLayer || [];
             (function(w: any, d: Document, s: string, l: string, i: string) {
                 w[l] = w[l] || [];
@@ -94,6 +96,46 @@ export default function CookieConsent() {
         }
     };
 
+    const initializeGA4 = () => {
+        if (typeof window === "undefined") return;
+        
+        // Initialize dataLayer if not already initialized
+        window.dataLayer = window.dataLayer || [];
+        
+        // Define gtag function
+        function gtag(...args: any[]) {
+            window.dataLayer.push(args);
+        }
+        
+        // Make gtag available globally
+        window.gtag = gtag;
+        
+        // Check if GA4 script is already loaded
+        const existingScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
+        if (existingScript) {
+            // Script already loaded, just configure
+            gtag('js', new Date());
+            gtag('config', 'G-DX1LVZX0XQ');
+            return;
+        }
+        
+        // Load GA4 script
+        const script1 = document.createElement('script');
+        script1.async = true;
+        script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-DX1LVZX0XQ';
+        document.head.appendChild(script1);
+        
+        // Load inline configuration script
+        const script2 = document.createElement('script');
+        script2.innerHTML = `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-DX1LVZX0XQ');
+        `;
+        document.head.appendChild(script2);
+    };
+
     const handleAcceptAll = () => {
         const newConsent = {
             necessary: true,
@@ -107,12 +149,20 @@ export default function CookieConsent() {
         localStorage.setItem("cookieConsentTimestamp", new Date().toISOString());
         setShowBanner(false);
         initializeGTM();
+        initializeGA4();
         
-        // Push consent event to GTM
+        // Push consent event to GTM and GA4
         if (typeof window !== "undefined" && window.dataLayer) {
             window.dataLayer.push({
                 event: "cookie_consent",
                 consent_type: "accept_all",
+            });
+        }
+        
+        // Send consent event to GA4
+        if (typeof window !== "undefined" && window.gtag) {
+            window.gtag('event', 'cookie_consent', {
+                consent_type: 'accept_all'
             });
         }
     };
@@ -141,12 +191,22 @@ export default function CookieConsent() {
         
         if (consent.analytics) {
             initializeGTM();
+            initializeGA4();
             if (typeof window !== "undefined" && window.dataLayer) {
                 window.dataLayer.push({
                     event: "cookie_consent",
                     consent_type: "custom",
                     analytics: consent.analytics,
                     marketing: consent.marketing,
+                });
+            }
+            
+            // Send consent event to GA4
+            if (typeof window !== "undefined" && window.gtag) {
+                window.gtag('event', 'cookie_consent', {
+                    consent_type: 'custom',
+                    analytics: consent.analytics,
+                    marketing: consent.marketing
                 });
             }
         }

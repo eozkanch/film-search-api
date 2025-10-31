@@ -42,3 +42,4 @@ export function matchesGenre(movieGenre: string | undefined, targetGenre: string
     return normalized.some(g => g === target || g.includes(target));
 }
 
+
