@@ -70,63 +70,6 @@ export default function CookieConsent() {
         updateConsentModeDirect(analytics, marketing);
     }, [updateConsentModeDirect]);
 
-    // Prevent hydration mismatch by only rendering on client
-    useEffect(() => {
-        setMounted(true);
-        
-        // Check if user has already made a choice
-        const consentData = localStorage.getItem("cookieConsent");
-        if (consentData) {
-            try {
-                const savedConsent = JSON.parse(consentData);
-                setConsent(savedConsent);
-                setShowBanner(false);
-                
-                // Google Consent Mode'u güncelle (kaydedilmiş tercihlere göre)
-                updateConsentMode(savedConsent.analytics, savedConsent.marketing);
-                
-                // Initialize GTM and GA4 if analytics is consented
-                if (savedConsent.analytics) {
-                    initializeGTM();
-                    initializeGA4();
-                }
-            } catch (error) {
-                // Invalid localStorage data, show banner
-                setShowBanner(true);
-            }
-        } else {
-            // First time visitor - show banner
-            // Varsayılan durum zaten layout.tsx'de 'denied' olarak ayarlandı
-            setShowBanner(true);
-        }
-    }, [updateConsentMode, initializeGTM, initializeGA4]);
-
-    // Prevent body scroll when modal is open
-    useEffect(() => {
-        if (showBanner) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [showBanner]);
-
-    // Prevent body scroll when drawer is open
-    useEffect(() => {
-        if (showPolicy) {
-            document.body.style.overflow = 'hidden';
-            // Smooth scroll to top to ensure drawer is visible
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            document.body.style.overflow = '';
-        }
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [showPolicy]);
-
     const initializeGTM = useCallback(() => {
         if (typeof window !== "undefined") {
             window.dataLayer = window.dataLayer || [];
@@ -185,6 +128,63 @@ export default function CookieConsent() {
         `;
         document.head.appendChild(script2);
     }, []);
+
+    // Prevent hydration mismatch by only rendering on client
+    useEffect(() => {
+        setMounted(true);
+        
+        // Check if user has already made a choice
+        const consentData = localStorage.getItem("cookieConsent");
+        if (consentData) {
+            try {
+                const savedConsent = JSON.parse(consentData);
+                setConsent(savedConsent);
+                setShowBanner(false);
+                
+                // Google Consent Mode'u güncelle (kaydedilmiş tercihlere göre)
+                updateConsentMode(savedConsent.analytics, savedConsent.marketing);
+                
+                // Initialize GTM and GA4 if analytics is consented
+                if (savedConsent.analytics) {
+                    initializeGTM();
+                    initializeGA4();
+                }
+            } catch (error) {
+                // Invalid localStorage data, show banner
+                setShowBanner(true);
+            }
+        } else {
+            // First time visitor - show banner
+            // Varsayılan durum zaten layout.tsx'de 'denied' olarak ayarlandı
+            setShowBanner(true);
+        }
+    }, [updateConsentMode, initializeGTM, initializeGA4]);
+
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+        if (showBanner) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [showBanner]);
+
+    // Prevent body scroll when drawer is open
+    useEffect(() => {
+        if (showPolicy) {
+            document.body.style.overflow = 'hidden';
+            // Smooth scroll to top to ensure drawer is visible
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [showPolicy]);
 
     const handleAcceptAll = () => {
         const newConsent = {
